@@ -13,10 +13,11 @@ class Resource(metaclass=ABCMeta):
     @property
     def requests(self) -> dict:
         """
-        ### Property
-        property requests for resources
-        Returns:
-            object: object request in dict results
+        ### REQUESTS
+        ---
+        this function is used as property from resource class to retrieve request from data
+        like raw data json, form-data, query-string and even file upload.
+        ---
         """
         _req = lambda: None
 
@@ -33,17 +34,18 @@ class Resource(metaclass=ABCMeta):
 
         return _req
     
-    def validation(self, **kwargs):
+    def validation(self, variable, **kwargs):
         try:
             for k, v in kwargs:
                 validate = v.split(',')
 
-                # ____check the type if string, number or json____
-                if filter(lambda x: x == 'numeric'):                
+                # ____this section is checking the type validation.
+                # validation available: numeric, string and json____
+                if filter(lambda x: x == 'numeric', validate):
                     v = int(v)
-                elif filter(lambda x: x == 'string'):
+                elif filter(lambda x: x == 'string', validate):
                     v = str(v)
-                elif filter(lambda x: x == 'json'):
+                elif filter(lambda x: x == 'json', validate):
                     v = jsonify(v)
         except:
             pass
