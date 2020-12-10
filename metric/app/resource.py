@@ -1,10 +1,10 @@
-from abc import ABCMeta
+from abc import ABC
 from flask import request
 from flask.json import jsonify
 from metric.app import APP
 
 
-class Resource(metaclass=ABCMeta):
+class Resource(ABC):
 
     # ____class method for resources____
     headers, body, file = [{}, {}, {}]
