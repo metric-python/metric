@@ -1,0 +1,14 @@
+version: "3.7"
+
+services:
+  mariadb:
+    container_name: metric_mariadb
+    image: mariadb:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 'metricdb'
+      MYSQL_DATABASE: 'metric'
+      MYSQL_USER: 'metric'
+      MYSQL_PASSWORD: 'metricdb'
+volumes:
+  mariadb-data:

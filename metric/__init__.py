@@ -1,6 +1,8 @@
 import os
 from abc import ABC, abstractmethod
+
 from metric.src.path import auto
+from metric.app.routes import resource as rsc
 
 ROOTPATH = os.path.dirname(os.path.abspath(__name__))
 
@@ -19,7 +21,7 @@ class Metric(ABC):
                 uri = '.'.join(segment).replace('.', '/')
 
             uri = uri.replace('apps/resources/', '')
-            print(uri)
+            rsc(v, uri)
 
     @abstractmethod
     def run(self):
