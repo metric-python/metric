@@ -9,4 +9,4 @@ class Cabin:
 
     def info(self, info, **kwargs):
         log = f'{self.now}: {info}'
-        sys.stdout.write(log)
+        sys.stdout.write(f'-[INFO] {log} \n')

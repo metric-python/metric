@@ -1,0 +1,29 @@
+{
+    "name": "metric",
+    "version": "0.1a1",
+    "description": "Metric a python framework",
+    "author": "kzulfazriawan",
+    "email": "kzulfazriawan@gmail.com",
+    "command": {
+        "init-app": {
+            "exec": "metric.console.initStart",
+            "help": "Init your application"
+        },
+        "create-resource": {
+            "exec": "metric.console.generate.resource",
+            "help": "Generate a resource"
+        },
+        "create-model": {
+            "exec": "metric.console.generate.model",
+            "help": "Generate a model"
+        },
+        "create-migration": {
+            "exec": "metric.console.generate.migration",
+            "help": "Generate a migration"
+        },
+        "upgrade-migration": {
+            "exec": "metric.console.generate.up_version",
+            "help": "Upgrade version migration"
+        }
+    }
+}

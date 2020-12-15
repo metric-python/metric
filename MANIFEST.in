@@ -1,1 +1,2 @@
 recursive-include metric/scripts *.mako
+include metric/metric.json

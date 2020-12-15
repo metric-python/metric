@@ -1,11 +1,9 @@
 from abc import ABC
 from flask import request
 from flask.json import jsonify
-from metric.app import APP
 
 
 class Resource(ABC):
-
     # ____class method for resources____
     headers, body, file = [{}, {}, {}]
 
@@ -33,7 +31,7 @@ class Resource(ABC):
                 _req = request.args
 
         return _req
-    
+
     def validation(self, variable, **kwargs):
         try:
             for k, v in kwargs:
