@@ -1,6 +1,6 @@
 import os
 from sqlalchemy.ext.declarative import declarative_base
-from abc import ABCMeta
+from abc import ABC
 
 from metric.src import ROOTPATH
 from metric.src.path import auto
@@ -14,9 +14,9 @@ class Schemas:
         self.__gathering()
 
     def __gathering(self):
-        for k, v in auto('db', 'models', 'db/models').items():
+        for k, v in auto('db', 'model', 'db/model').items():
             setattr(self.model, v.__name__, v)
 
 
-class Model(declarative_base(), metaclass=ABCMeta):
+class Model(declarative_base()):
     pass

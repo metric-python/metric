@@ -1,6 +1,9 @@
 from abc import ABC
 from flask import request
-from flask.json import jsonify
+from flask import make_response, jsonify
+from flask_wtf import FlaskForm
+from wtforms import StringField, IntegerField
+from wtforms.validators import required
 
 
 class Resource(ABC):
@@ -32,18 +35,33 @@ class Resource(ABC):
 
         return _req
 
-    def validation(self, variable, **kwargs):
+    def validation(self, **kwargs) -> dict:
         try:
-            for k, v in kwargs:
-                validate = v.split(',')
+            dict_validation = {}
 
-                # ____this section is checking the type validation.
-                # validation available: numeric, string and json____
+            for k, v in kwargs.items():
+                validate = v.split(',')
+                tmp_validators = []
+
+                if filter(lambda x: x == 'required', validate):
+                    tmp_validators.append(required())
+
                 if filter(lambda x: x == 'numeric', validate):
-                    v = int(v)
-                elif filter(lambda x: x == 'string', validate):
-                    v = str(v)
-                elif filter(lambda x: x == 'json', validate):
-                    v = jsonify(v)
-        except:
-            pass
+                    dict_validation[k] = IntegerField(k, validators=tmp_validators)
+                else:
+                    dict_validation[k] = StringField(k, validators=tmp_validators)
+        except KeyError as err:
+            print('asdflaksdjflaskdfj')
+        else:
+            class_name = f'{self.__class__.__name__.lower()}_forms_validation'
+            validate = type(class_name, (FlaskForm, ), dict_validation)()
+
+            if not validate.validate():
+                return {
+                    'errors': validate.errors,
+                    'code': 422
+                }
+            else:
+                return {
+                    'errors': None
+                }
