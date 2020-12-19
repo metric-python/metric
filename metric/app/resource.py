@@ -3,7 +3,7 @@ from flask import request
 from flask import make_response, jsonify
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField
-from wtforms.validators import required
+from wtforms.validators import required, DataRequired
 
 
 class Resource(ABC):
@@ -35,7 +35,7 @@ class Resource(ABC):
 
         return _req
 
-    def validation(self, **kwargs) -> dict:
+    def validation(self, csrf_enable=True, **kwargs) -> dict:
         try:
             dict_validation = {}
 
@@ -43,10 +43,10 @@ class Resource(ABC):
                 validate = v.split(',')
                 tmp_validators = []
 
-                if filter(lambda x: x == 'required', validate):
-                    tmp_validators.append(required())
+                if 'required' in validate:
+                    tmp_validators.append(DataRequired())
 
-                if filter(lambda x: x == 'numeric', validate):
+                if 'numeric' in validate:
                     dict_validation[k] = IntegerField(k, validators=tmp_validators)
                 else:
                     dict_validation[k] = StringField(k, validators=tmp_validators)
@@ -54,7 +54,10 @@ class Resource(ABC):
             print('asdflaksdjflaskdfj')
         else:
             class_name = f'{self.__class__.__name__.lower()}_forms_validation'
-            validate = type(class_name, (FlaskForm, ), dict_validation)()
+            if not csrf_enable:
+                validate = type(class_name, (FlaskForm, ), dict_validation)(csrf_enabled=False)
+            else:
+                validate = type(class_name, (FlaskForm, ), dict_validation)()
 
             if not validate.validate():
                 return {

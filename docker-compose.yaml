@@ -6,9 +6,9 @@ services:
     image: mariadb:latest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: 'metricdb'
-      MYSQL_DATABASE: 'metric'
-      MYSQL_USER: 'metric'
-      MYSQL_PASSWORD: 'metricdb'
+      MYSQL_ROOT_PASSWORD: 'dbmetric_passwd'
+      MYSQL_DATABASE: 'dbmetric'
+      MYSQL_USER: 'dbmetric_user'
+      MYSQL_PASSWORD: 'dbmetric_passwd'
 volumes:
   mariadb-data:

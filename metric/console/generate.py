@@ -7,6 +7,10 @@ from metric.src.path import createFile
 from metric.src.path import createPackage
 from metric.src import saltKey
 from metric.src import iniConfig
+from metric.src.cabin import Cabin
+
+
+CABIN = Cabin()
 
 
 def __template(t, **kwargs):
@@ -75,4 +79,5 @@ def migration(message, path=os.getcwd()):
 
 
 def up_version(path=os.getcwd(), sql_mode=False):
+    CABIN.info('Upgrade migration!')
     return upgrade(iniConfig(path), 'head', sql=sql_mode)
