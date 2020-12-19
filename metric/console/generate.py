@@ -35,10 +35,12 @@ def __template(t, **kwargs):
             path.extend(split_name[:-1])
             name = split_name[-1]
 
-            createPackage(os.path.join(*path))
+            if not os.path.exists(os.path.join(*path)):
+                createPackage(os.path.join(*path))
 
         path.append(f'{name.lower()}.py')
         template = Template(filename=os.path.join(ROOTPATH, f'{t}.py.mako'))
+
         createFile(os.path.join(*path), template.render(**kwargs))
 
 
