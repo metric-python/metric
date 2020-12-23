@@ -32,6 +32,19 @@ def initStart(project):
             for i in v:
                 createDirectory(os.path.join(project, k, i))
 
+        # remove unnecessary file and directory
+        file_to_remove = [
+            'script.py.mako'
+        ]
+        for i in file_to_remove:
+            os.remove(os.path.join(project, i))
+
+        dir_to_remove = [
+            'versions'
+        ]
+        for i in dir_to_remove:
+            os.rmdir(os.path.join(project, i))
+
         scripts = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../scripts')
         for file in glob.glob(os.path.join(scripts, "*.mako")):
             copy(file, project)
@@ -41,4 +54,3 @@ def initStart(project):
 
         # reset config
         configReset(project)
-

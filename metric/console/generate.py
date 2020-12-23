@@ -1,6 +1,6 @@
 import os
 from mako.template import Template
-from alembic.command import revision, upgrade
+from alembic.command import revision, upgrade, downgrade
 
 from metric import ROOTPATH
 from metric.src.path import createFile
@@ -38,10 +38,12 @@ def __template(t, **kwargs):
             if not os.path.exists(os.path.join(*path)):
                 createPackage(os.path.join(*path))
 
+        render_var = kwargs
+        render_var['name'] = name
+
         path.append(f'{name.lower()}.py')
         template = Template(filename=os.path.join(ROOTPATH, f'{t}.py.mako'))
-
-        createFile(os.path.join(*path), template.render(**kwargs))
+        createFile(os.path.join(*path), template.render(**render_var))
 
 
 def resource(name):
@@ -86,6 +88,11 @@ def migration(message, path=os.getcwd()):
     return revision(iniConfig(path), message=message)
 
 
-def up_version(path=os.getcwd(), sql_mode=False):
+def up_version(target='head',path=os.getcwd(), sql_mode=False):
     CABIN.info('Upgrade migration!')
-    return upgrade(iniConfig(path), 'head', sql=sql_mode)
+    return upgrade(iniConfig(path), target, sql=sql_mode)
+
+
+def down_version(target='head', path=os.getcwd(), sql_mode=False):
+    CABIN.info('Downgrade migration!')
+    return downgrade(iniConfig(path), target, sql=sql_mode)

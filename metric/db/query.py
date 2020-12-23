@@ -39,7 +39,7 @@ class Query:
 
     def add(self, **kwargs):
         """
-        ____simple adding record into the schema, and returning the result object____
+        adding new record by using dict as parameter
         """
         query = self.__class__(**kwargs)
         self.__session.add(query)
@@ -48,7 +48,7 @@ class Query:
 
     def adds(self, *args):
         """
-        ____this is bulk add record into the schema, and returning the result as boolean____
+        adding record as bulk list
         """
         query = list()
         for item in args:
@@ -92,9 +92,6 @@ class Query:
         return self
 
     def filter(self, col, value):
-        """
-        ____filter into specified selection of the column and value____
-        """
         get_table = getattr(self._sa_instance_state.class_, col)
         self.__query = self.__query.filter(get_table == value)
         return self

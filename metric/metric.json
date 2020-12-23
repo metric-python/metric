@@ -24,6 +24,10 @@
         "upgrade-migration": {
             "exec": "metric.console.generate.up_version",
             "help": "Upgrade version migration"
+        },
+        "downgrade-migration": {
+            "exec": "metric.console.generate.down_version",
+            "help": "Downgrade version migration"
         }
     }
 }
