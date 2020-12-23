@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="Metric",
-    version="0.1a1",
+    version="1.0rc1",
     description="Metric python framework",
     long_description=long_description,
     long_description_content_type="text/markdown",

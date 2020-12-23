@@ -53,8 +53,8 @@ def resource(name):
     __template('resources', name=name)
 
 
-def model(name, tablename):
-    __template('models', name=name, tablename=tablename)
+def model(name, table_name):
+    __template('models', name=name, tablename=table_name)
 
 
 def configReset(path=os.getcwd()):
@@ -64,12 +64,18 @@ def configReset(path=os.getcwd()):
     app_key = saltKey()
     app_config = iniConfig(path).file_config
 
+    # alembic configuration
     app_config.set('alembic', 'version_locations', '%(here)s/db/version')
     app_config.set('alembic', 'output_encoding', 'utf-8')
 
+    # application configuration
     app_config.add_section('app')
     app_config.set('app', 'key', app_key)
     app_config.set('app', 'name', 'Metric')
+
+    # uWSGI configuration
+    app_config.add_section('uwsgi')
+    app_config.set('uwsgi', 'module', 'app.wsgi')
 
     with open(os.path.join(path, 'config.ini'), 'w') as f:
         app_config.write(f)
