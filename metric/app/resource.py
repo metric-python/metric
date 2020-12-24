@@ -33,7 +33,7 @@ class Resource(ABC):
             elif bool(request.args):
                 _req = request.args
 
-        return _req
+        return _req.to_dict(flat=True)
 
     def validation(self, csrf_enable=True, **kwargs) -> dict:
         try:
