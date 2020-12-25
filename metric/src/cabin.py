@@ -1,12 +1,25 @@
-import sys
+import logging
 from datetime import datetime
-from logging import Logger
+
+from metric.src import iniConfig
+from metric.src import ROOTPATH
 
 
 class Cabin:
-    def __init__(self) -> None:
-        self.now = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
+    _config = iniConfig(ROOTPATH)
+    _now = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
 
-    def info(self, info, **kwargs):
-        log = f'{self.now}: {info}'
-        sys.stdout.write(f'-[INFO] {log} \n')
+    def __init__(self):
+        try:
+            logging.basicConfig(filename=self._config.get_section_option('app', 'logs'), level=logging.INFO)
+        except Exception:
+            logging.basicConfig(level=logging.INFO)
+
+    def info(self, info):
+        logging.info(f'{self._now}: {info}')
+
+    def warning(self, warning):
+        logging.warning(f'{self._now}: {warning}')
+
+    def error(self, error):
+        logging.error(f'{self._now}: {error}')

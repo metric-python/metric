@@ -21,6 +21,8 @@ def __template(t, **kwargs):
         path = ['app', 'resource']
     elif t == 'models':
         path = ['db', 'model']
+    elif t == 'plantations':
+        path = ['db', 'field']
     else:
         path = []
 
@@ -48,15 +50,66 @@ def __template(t, **kwargs):
 
 def resource(name):
     """
-    Resource
-    ---
-    this function is serve as resource generate file and package directory
+    To generate a resource file
+
+    :@param name: this parameter to define your name/path of the resource
     """
     __template('resources', name=name)
 
 
 def model(name, table_name):
+    """
+    To generate a model file
+
+    :@param name: this parameter is define your name/path of the model
+
+    :@param table_name: parameter to define your table name of the model
+    """
     __template('models', name=name, tablename=table_name)
+
+
+def plantation(name):
+    """
+    To generate a plantation file
+
+    :@param name: this parameter is define your name/path of the plantation
+    """
+    __template('plantations', name=name)
+
+
+def migration(message):
+    """ Function will create a new revision migration from alembic
+
+    :@param message: a parameter to describe your migration name and message.
+    """
+    return revision(iniConfig(os.getcwd()), message=message)
+
+
+def up_version(target='head', sql_mode=False):
+    """ Upgrade version of migration available
+
+    :@param target: parameter target of version migration
+
+    :@param sql_mode: a toggle to show sql_mode, some kind like verbose on/off
+    """
+    CABIN.info('Upgrade migration!')
+    return upgrade(iniConfig(os.getcwd()), target, sql=sql_mode)
+
+
+def down_version(target='head', sql_mode=False):
+    CABIN.info('Downgrade migration!')
+    return downgrade(iniConfig(os.getcwd()), target, sql=sql_mode)
+
+
+def up_plantation(name):
+    from importlib import util
+
+    spec = util.spec_from_file_location(name, os.path.join(os.getcwd(), 'db', 'field', f'{name}.py'))
+    mod = util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    plant_class = getattr(mod, name.capitalize())()
+    return plant_class.run()
 
 
 def configReset(path=os.getcwd()):
@@ -82,17 +135,3 @@ def configReset(path=os.getcwd()):
     with open(os.path.join(path, 'config.ini'), 'w') as f:
         app_config.write(f)
         f.close()
-
-
-def migration(message, path=os.getcwd()):
-    return revision(iniConfig(path), message=message)
-
-
-def up_version(target='head',path=os.getcwd(), sql_mode=False):
-    CABIN.info('Upgrade migration!')
-    return upgrade(iniConfig(path), target, sql=sql_mode)
-
-
-def down_version(target='head', path=os.getcwd(), sql_mode=False):
-    CABIN.info('Downgrade migration!')
-    return downgrade(iniConfig(path), target, sql=sql_mode)

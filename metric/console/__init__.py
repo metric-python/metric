@@ -20,15 +20,19 @@ def initStart(project):
 
         init(iniConfig(project), project)
         cabin.info('Building configuration')
+        build_package = {
+            'app': ['resource', 'bridge', 'handler'],
+            'db': ['model']
+        }
 
         # build package
-        for k, v in {'app': ['resource'], 'db': ['model']}.items():
+        for k, v in build_package.items():
             createPackage(os.path.join(project, k))
             for i in v:
                 createPackage(os.path.join(project, k, i))
 
         # build directory
-        for k, v in {'db': ['version']}.items():
+        for k, v in {'db': ['version', 'field']}.items():
             for i in v:
                 createDirectory(os.path.join(project, k, i))
 
@@ -54,3 +58,7 @@ def initStart(project):
 
         # reset config
         configReset(project)
+
+        # change directory and generate some command
+        os.chdir(project)
+

@@ -1,6 +1,6 @@
 import bcrypt
 import datetime
-from flask_jwt_extended import create_access_token, create_refresh_token
+from flask_jwt_extended import create_access_token, create_refresh_token, get_raw_jwt
 
 from metric.src import ROOTPATH
 from metric.src import iniConfig
@@ -48,3 +48,6 @@ class Auth:
             'token_access': create_access_token(identity=identity, expires_delta=expired),
             'token_refresh': create_refresh_token(identity=identity)
         }
+
+    def revokeToken(self):
+        jti = get_raw_jwt()['jti']
