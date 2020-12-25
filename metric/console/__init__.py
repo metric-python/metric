@@ -49,8 +49,14 @@ def initStart(project):
         for i in dir_to_remove:
             os.rmdir(os.path.join(project, i))
 
+        # scripts copy
         scripts = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../scripts')
         for file in glob.glob(os.path.join(scripts, "*.mako")):
+            copy(file, project)
+
+        # setup copy
+        setups = os.path.join(scripts, 'setup')
+        for file in glob.glob(os.path.join(setups, '.py')):
             copy(file, project)
 
         # copy directory to project path
