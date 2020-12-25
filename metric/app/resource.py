@@ -5,8 +5,10 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField
 from wtforms.validators import DataRequired
 
+from metric.app.view import View
 
-class Resource(ABC):
+
+class Resource(ABC, View):
     """
     Base class resource, used as parent for resource
 

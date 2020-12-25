@@ -8,7 +8,6 @@ from metric.src import iniConfig
 
 class Auth:
     auth_username = 'username'
-    _current_time = datetime.datetime.now()
     _config = iniConfig(ROOTPATH)
 
     @classmethod

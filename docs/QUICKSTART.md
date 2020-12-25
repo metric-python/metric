@@ -29,4 +29,17 @@ $ python -m metric init-app=my_website
 ```
 Metric will directory and create your application, called **my_website**.
 Then, you can go to your project directory and start build the things you need for example:
-Model, Migration and Plantation
+Model, Migration and Plantation.
+
+```shell
+$ cd my_website
+
+# create model Users and it's table name users
+$ python -m metric create-model=Users,users
+
+# create a migration for users
+$ python -m metric create-migration=create_table_users
+
+# create a plantation for initiate field users
+$ python -m metric create-plantation=InitiateUsers
+```

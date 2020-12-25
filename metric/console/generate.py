@@ -127,6 +127,11 @@ def configReset(path=os.getcwd()):
     app_config.add_section('app')
     app_config.set('app', 'key', app_key)
     app_config.set('app', 'name', 'Metric')
+    app_config.set('app', 'logs', '%(here)s/logs')
+
+    # auth configuration
+    app_config.add_section('auth')
+    app_config.set('auth', 'expiry_time', 180)
 
     # uWSGI configuration
     app_config.add_section('uwsgi')
