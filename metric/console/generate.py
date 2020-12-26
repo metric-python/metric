@@ -131,7 +131,7 @@ def configReset(path=os.getcwd()):
 
     # auth configuration
     app_config.add_section('auth')
-    app_config.set('auth', 'expiry_time', 180)
+    app_config.set('auth', 'expiry_time', '180')
 
     # uWSGI configuration
     app_config.add_section('uwsgi')

@@ -1,2 +1,2 @@
-recursive-include metric/scripts *.mako
+recursive-include metric/scripts *
 include metric/metric.json

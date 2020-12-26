@@ -1,6 +1,7 @@
 import os
 import glob
 from shutil import copy
+from distutils.dir_util import copy_tree
 from alembic.command import init
 
 from metric.src.path import createDirectory, createPackage
@@ -21,7 +22,7 @@ def initStart(project):
         init(iniConfig(project), project)
         cabin.info('Building configuration')
         build_package = {
-            'app': ['resource', 'bridge', 'handler'],
+            'app': ['resource', 'bridge', 'handler', 'view'],
             'db': ['model']
         }
 
@@ -32,7 +33,11 @@ def initStart(project):
                 createPackage(os.path.join(project, k, i))
 
         # build directory
-        for k, v in {'db': ['version', 'field']}.items():
+        dir_to_build = {
+            'db': ['version', 'field'],
+            'public': ['css', 'js', 'img']
+        }
+        for k, v in dir_to_build.items():
             for i in v:
                 createDirectory(os.path.join(project, k, i))
 
@@ -56,7 +61,8 @@ def initStart(project):
 
         # setup copy
         setups = os.path.join(scripts, 'setup')
-        for file in glob.glob(os.path.join(setups, '.py')):
+        copy_tree(setups, project)
+        for file in glob.glob(os.path.join(setups, "*.py")):
             copy(file, project)
 
         # copy directory to project path
@@ -64,7 +70,3 @@ def initStart(project):
 
         # reset config
         configReset(project)
-
-        # change directory and generate some command
-        os.chdir(project)
-

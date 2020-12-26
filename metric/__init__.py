@@ -1,10 +1,11 @@
 import os
 from abc import ABC, abstractmethod
 
-from metric.src.path import auto
 from metric.src import iniConfig
-from metric.app.routes import resource as rsc
+from metric.src.path import auto
 from metric.app import APP
+from metric.app.routes import resource as rsc
+from metric.app.routes import route
 from metric.app.helper import hashString
 
 ROOTPATH = os.path.dirname(os.path.abspath(__name__))

@@ -6,6 +6,16 @@ from metric.src.cabin import Cabin
 cabin = Cabin()
 
 
+# ** SHOW ROUTE **
+def show_route():
+    """Print available functions."""
+    func_list = {}
+    for rule in APP.url_map.iter_rules():
+        if rule.endpoint != 'static':
+            func_list[rule.rule] = APP.view_functions[rule.endpoint].__name__
+    return func_list
+
+
 # ** ROUTE **
 def route(func, **kwargs):
     """
@@ -30,7 +40,7 @@ def route(func, **kwargs):
 
 
 # ** RESOURCES **
-def resource(cls, prefix='/') -> None:
+def resource(cls, prefix='/'):
     """
     ### RESOURCE
     ---

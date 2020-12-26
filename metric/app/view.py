@@ -12,5 +12,7 @@ class View:
         return Environment(loader=FileSystemLoader(searchpath=self._path_view))
 
     def render(self, file, **kwargs):
-        loader = self._loader(file).get_template(os.path.join(*file.split('.')))
+        file = file.split('.')
+        file[-1] = f'{file[-1]}.html'
+        loader = self._loader(file).get_template(os.path.join(*file))
         return loader.render(**kwargs)
