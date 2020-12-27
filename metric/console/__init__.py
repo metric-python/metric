@@ -22,7 +22,7 @@ def initStart(project):
         init(iniConfig(project), project)
         cabin.info('Building configuration')
         build_package = {
-            'app': ['resource', 'bridge', 'handler', 'view'],
+            'app': ['resource', 'bridge', 'handler'],
             'db': ['model']
         }
 
@@ -34,6 +34,7 @@ def initStart(project):
 
         # build directory
         dir_to_build = {
+            'app': ['view'],
             'db': ['version', 'field'],
             'public': ['css', 'js', 'img']
         }
