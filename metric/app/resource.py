@@ -1,9 +1,12 @@
 from abc import ABC
 
-from flask import request
+# flask module required
+from flask import request, session
 from flask_wtf import FlaskForm
+
+# wtforms module required
 from wtforms import StringField, IntegerField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Email, ValidationError
 
 from metric.app.view import View
 
@@ -21,12 +24,20 @@ class Resource(ABC, View):
 
     headers, body, file = [{}, {}, {}]
 
+    def __init__(self):
+        """
+        class resource
+        """
+        super(Resource, self).__init__()
+        class_name = f'{self.__class__.__name__.lower()}_forms_validation'
+        self.forms = type(class_name, (FlaskForm,), {})
+
     @property
     def requests(self) -> dict:
         """
         Property class function for get and filter the requests from requests
 
-        :@return dict: Requests results as dictionary
+        :@return _req.to_dict: Requests results as dictionary
         """
         _req = lambda: None
 
@@ -46,6 +57,7 @@ class Resource(ABC, View):
     def validation(self, csrf_enable=True, **kwargs) -> dict:
         """
         This function will validate your requests resource
+
         @param csrf_enable:
         @param kwargs:
         @return:
@@ -58,24 +70,27 @@ class Resource(ABC, View):
                 tmp_validators = []
 
                 if 'required' in validate:
-                    tmp_validators.append(DataRequired())
+                    tmp_validators.append(DataRequired(f'field {k} is required'))
+                if 'email' in validate:
+                    tmp_validators.append(Email(f'field {k} is required and valid email type'))
 
+                # defining field-type
                 if 'numeric' in validate:
                     dict_validation[k] = IntegerField(k, validators=tmp_validators)
                 else:
                     dict_validation[k] = StringField(k, validators=tmp_validators)
         except KeyError as err:
-            raise KeyError.with_traceback(err.__traceback__)
+            raise ValidationError.with_traceback(err.__traceback__)
         else:
             class_name = f'{self.__class__.__name__.lower()}_forms_validation'
             if not csrf_enable:
-                validate = type(class_name, (FlaskForm,), dict_validation)(csrf_enabled=False)
+                self.forms = type(class_name, (FlaskForm,), dict_validation)(csrf_enabled=False)
             else:
-                validate = type(class_name, (FlaskForm,), dict_validation)()
+                self.forms = type(class_name, (FlaskForm,), dict_validation)()
 
-            if not validate.validate():
+            if not self.forms.validate():
                 return {
-                    'errors': validate.errors,
+                    'errors': self.forms.errors,
                     'code': 422
                 }
             else:
