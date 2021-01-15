@@ -1,0 +1,63 @@
+<!-- EXTENDS TO LAYOUT HTML -->
+{% extends "layout.html" %}
+
+<!-- BLOCK FOR TITLE WEB -->
+{% block title %}Welcome{% endblock %}
+
+{% block content %}
+<div class="uk-card-header">
+    <div class="uk-grid-small uk-flex-middle" uk-grid>
+        <div class="uk-width-auto">
+            <img width="100" height="100" src="/img/logo.svg">
+        </div>
+        <div class="uk-width-expand uk-visible@s">
+            <h1 class="uk-margin-remove-bottom uk-heading-large bold-reg">Metric</h1>
+        </div>
+    </div>
+</div>
+<div class="uk-card-body uk-text-center">
+    <h2 class="uk-text-bold">Welcome to Metric Framework!</h2>
+    <p class="uk-text-large">
+        Metric is framework built for web application development with elegant, structured, and simple.
+        Metric provide not just only core tools for web application development, but it also built-in
+        with rich resources for any purpose,allowing you to focus with your idea and expand it without
+        worries.
+    </p>
+    <button type="button" class="uk-button uk-button-default uk-button-large">Get to know more about Metric</button>
+    <hr/>
+    <h2 class="uk-text-center uk-text-bold">Build things easily</h2>
+    <div class="uk-grid uk-grid-collapse uk-child-width-expand@s">
+        <div class="uk-background-muted uk-padding-small uk-width-1-3@m">
+            <h4>Well Fortified</h4>
+            <p class="uk-text-left">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer iaculis tristique purus. Ut sodales
+                quam nec odio porttitor venenatis. Nam ullamcorper quis elit nec efficitur.
+            </p>
+        </div>
+        <div class="uk-background-muted uk-padding-small uk-width-1-3@m">
+            <h4>Eligible</h4>
+            <p class="uk-text-left">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer iaculis tristique purus. Ut sodales
+                quam nec odio porttitor venenatis. Nam ullamcorper quis elit nec efficitur.
+            </p>
+        </div>
+        <div class="uk-background-muted uk-padding-small uk-width-1-3@m">
+            <h4>Efficient</h4>
+            <p class="uk-text-left">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer iaculis tristique purus. Ut sodales
+                quam nec odio porttitor venenatis. Nam ullamcorper quis elit nec efficitur.
+            </p>
+        </div>
+    </div>
+
+</div>
+<div class="uk-card-footer uk-flex uk-flex-middle">
+    <a href="https://github.com/metric-python/metric" uk-icon="icon: github; ratio: 2" class="uk-margin-right"></a>
+    <a href="#" uk-icon="icon: facebook; ratio: 2" class="uk-margin-right"></a>
+    <a href="#" uk-icon="icon: youtube; ratio: 2" class="uk-margin-right"></a>
+    <div class="uk-width-expand uk-text-right">
+        <a href="https://getuikit.com/" class="uk-text-muted">Powered by <span uk-icon="icon: uikit; ratio: .8" ></span></a>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,69 +1,78 @@
 import datetime
+from multiprocessing.dummy import Value
 
 from sqlalchemy import func
 from sqlalchemy.exc import SQLAlchemyError
 
 from metric.db import session
-
+from metric.db.errors import AddQueryInvalid
 
 class Query:
     """
     ____class querying____
     """
-    __session = session()
     __result = None
     __query = None
     __action = []
     __along = []
+    q = None
+    s = session()
 
     def __del__(self):
-        self.__session.close()
+        self.s.close()
 
-    def select(self, options=None, *args):
+    def select(self, *args):
         """
-        ____query intiating with select from____
+        ____To starting some result you must first follow the select function and then anything else____
+
+        @param: args: List all the column record to shown if not then show all
+        @return: self
         """
-        if options is not None:
-            if options == 'count':
-                self.__query = self.__session.query(func.count(self.__class__.id))
+        if args:
+            self.q = self.s.query(*[getattr(self.__class__, i) for i in args])
         else:
-            if not args:
-                self.__query = self.__session.query(self.__class__)
-            else:
-                s = list()
-                for i in args:
-                    s.append(getattr(self._sa_instance_state.class_, i))
-                self.__query = self.__session.query(*s)
+            self.q = self.s.query(self.__class__)
 
         return self
 
-    def add(self, **kwargs):
+    def add(self, result={}, *args, **kwargs):
         """
-        adding new record by using dict as parameter
-        """
-        query = self.__class__(**kwargs)
-        self.__session.add(query)
-        self.commit(query)
-        return query
+        ____This function is supposed to insert data either single record or multiple____
 
-    def adds(self, *args):
+        @param result: Is the output you wanted to return
+        @param args: If you're looking to add multiple record use lists
+        @params kwargs: If you're looking to single add record, just use dict
         """
-        adding record as bulk list
-        """
-        query = list()
-        for item in args:
-            query.append(self.__class__(**item))
-        self.__session.add_all(query)
-        self.commit()
 
-    def bulk_insert(self, *args):
-        query = list()
-        for item in args:
-            query.append(self.__class__(**item))
-        self.__session.bulk_save_objects(query)
-        self.commit()
+        # ____if parameter is dictionary the it single add instance____
+        if bool(kwargs):
+            try:
+                query = self.__class__(**kwargs)
+            except AddQueryInvalid as err:
+                raise AddQueryInvalid(kwargs)
+            else:
+                self.s.add(query)
+                self.commit(query)
 
-    def update(self, **kwargs):
+                if isinstance(result, dict):
+                    return self.to_dict(query)
+
+                elif isinstance(result, object):
+                    return self.to_object(query)
+
+        # ____if args is not empty and is list then it multiple add instance____
+        elif args:
+            try:
+                query = list()
+                for item in args:
+                    query.append(self.__class__(**item))
+            except AddQueryInvalid as err:
+                raise AddQueryInvalid(args)
+            else:
+                self.s.add_all(query)
+                self.commit()
+
+    def edit(self, **kwargs):
         self.first()
 
         for k, v in kwargs.items():
@@ -71,17 +80,24 @@ class Query:
         self.commit(self.__result)
         return self.__result
 
+    def bulk_insert(self, *args):
+        query = list()
+        for item in args:
+            query.append(self.__class__(**item))
+        self.s.bulk_save_objects(query)
+        self.commit()
+
     def commit(self, query=None):
         try:
-            self.__session.commit()
+            self.s.commit()
 
         except SQLAlchemyError as err:
-            self.__session.rollback()
+            self.s.rollback()
             raise err
 
         else:
             if query is not None:
-                self.__session.refresh(query)
+                self.s.refresh(query)
                 return query
 
     def along(self, *args):
@@ -124,8 +140,8 @@ class Query:
         """
         ____select everything that appear in result query____
         """
-        self.__result = self.__query.all()
-        return self
+        self.commit()
+        return self.q.all()
 
     def first(self):
         """
@@ -133,6 +149,38 @@ class Query:
         """
         self.__result = self.__query.first()
         return self
+
+    def to_dict(self, data):
+        """
+        ____Converting the result to dictionary data and return it with hidden and deleted instance____
+
+        @param data: The query data you given
+        @return: dictionary data
+        """
+        data = data.__dict__
+
+        # ____removing instance_state from data dictionary____
+        del data['_sa_instance_state']
+
+        # ____removing key with hidden defined
+        for i in self.__class__.hidden():
+            del data[i]
+
+        return data
+
+    def to_object(self, data):
+        """
+        ____Converting the result to object, served same as above____
+
+        @param data: The query data you given
+        @return: object data
+        """
+        data_to_object = lambda: None
+
+        for k, v in self.to_dict(data).items():
+            setattr(data_to_object, k, v)
+
+        return data_to_object
 
     def result(self, show_as=None):
         """

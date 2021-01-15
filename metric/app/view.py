@@ -6,7 +6,7 @@ from metric.src import ROOTPATH
 
 
 class View:
-    _path_view = os.path.join(ROOTPATH, 'app', 'view')
+    _path_view = os.path.join(ROOTPATH, 'apps', 'views')
 
     def _loader(self, template_file):
         return Environment(loader=FileSystemLoader(searchpath=self._path_view))

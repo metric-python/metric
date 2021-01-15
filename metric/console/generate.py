@@ -18,11 +18,11 @@ def __template(t, **kwargs):
     a function to generate template from mako file as resource, model and many more
     """
     if t == 'resources':
-        path = ['app', 'resource']
+        path = ['apps', 'resources']
     elif t == 'models':
-        path = ['db', 'model']
+        path = ['dbs', 'models']
     elif t == 'plantations':
-        path = ['db', 'field']
+        path = ['dbs', 'fields']
     else:
         path = []
 
@@ -44,7 +44,7 @@ def __template(t, **kwargs):
         render_var['name'] = name
 
         path.append(f'{name.lower()}.py')
-        template = Template(filename=os.path.join(ROOTPATH, f'{t}.py.mako'))
+        template = Template(filename=os.path.join(ROOTPATH, 'scripts', f'{t}.py.mako'))
         createFile(os.path.join(*path), template.render(**render_var))
 
 
@@ -104,11 +104,13 @@ def down_version(target='head', sql_mode=False):
 def up_plantation(name):
     from importlib import util
 
-    spec = util.spec_from_file_location(name, os.path.join(os.getcwd(), 'db', 'field', f'{name}.py'))
+    file_name = name.lower()
+
+    spec = util.spec_from_file_location(name, os.path.join(os.getcwd(), 'dbs', 'fields', f'{file_name}.py'))
     mod = util.module_from_spec(spec)
     spec.loader.exec_module(mod)
 
-    plant_class = getattr(mod, name.capitalize())()
+    plant_class = getattr(mod, name)()
     return plant_class.run()
 
 
@@ -121,6 +123,7 @@ def configReset(path=os.getcwd()):
 
     # alembic configuration
     app_config.set('alembic', 'version_locations', '%(here)s/db/version')
+    app_config.set('alembic', 'script_location', os.path.join(path, 'script'))
     app_config.set('alembic', 'output_encoding', 'utf-8')
 
     # application configuration

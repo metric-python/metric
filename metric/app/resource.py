@@ -26,35 +26,37 @@ class Resource(ABC, View):
 
     def __init__(self):
         """
-        class resource
+        ____Base class for resources, read the documentation for more information about the resources____
         """
         super(Resource, self).__init__()
-        class_name = f'{self.__class__.__name__.lower()}_forms_validation'
-        self.forms = type(class_name, (FlaskForm,), {})
+
+        # ____building form class for resources validation____
+        self._class_name = self.__class__.__name__
 
     @property
-    def requests(self) -> dict:
+    def requests(self):
         """
-        Property class function for get and filter the requests from requests
+        ____An property class for extract the requests from resources____
 
-        :@return _req.to_dict: Requests results as dictionary
+        @return: Requests results as dictionary
         """
-        _req = lambda: None
+        _requests = lambda: None
 
-        if request.is_json:
-            _req = request.json
-        else:
-            if bool(request.form):
-                _req = request.form
+        if request.json is not None:
+            _requests.json = request.json
 
-                if bool(request.files) and isinstance(request.files, dict):
-                    _req.upload = request.files
-            elif bool(request.args):
-                _req = request.args
+        if bool(request.form):
+            _requests.form = request.form.to_dict(flat=False)
 
-        return _req.to_dict(flat=True)
+            if bool(request.files):
+                _requests.file = request.files.to_dict(flat=False)
 
-    def validation(self, csrf_enable=True, **kwargs) -> dict:
+        if bool(request.args):
+            _requests.args = request.args
+
+        return _requests
+
+    def validation(self, csrf_enable=True, **kwargs):
         """
         This function will validate your requests resource
 
@@ -82,18 +84,10 @@ class Resource(ABC, View):
         except KeyError as err:
             raise ValidationError.with_traceback(err.__traceback__)
         else:
-            class_name = f'{self.__class__.__name__.lower()}_forms_validation'
-            if not csrf_enable:
-                self.forms = type(class_name, (FlaskForm,), dict_validation)(csrf_enabled=False)
-            else:
-                self.forms = type(class_name, (FlaskForm,), dict_validation)()
+            forms = type(f'{self._class_name.lower()}_forms_validation', (FlaskForm,), dict_validation)
+            forms = forms(csrf_enabled=False) if not csrf_enable else forms()
 
-            if not self.forms.validate():
-                return {
-                    'errors': self.forms.errors,
-                    'code': 422
-                }
+            if not forms.validate():
+                return {'errors': forms.errors, 'code': 422}
             else:
-                return {
-                    'errors': None
-                }
+                return {'code': 200}

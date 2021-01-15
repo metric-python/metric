@@ -9,12 +9,11 @@ Model = declarative_base()
 
 
 class Schemas:
-    path_model = os.path.join(ROOTPATH, 'dbs', 'models')
-
     def __init__(self):
-        self.model = lambda: None
-        self.__gathering()
-
-    def __gathering(self):
-        for k, v in auto('db', 'model', 'db/model').items():
+        """
+        ____Schemas is used to gather all the models registered in package models,
+        and set it as attribute variable for class it self____
+        """
+        self.model = lambda : None
+        for k, v in auto('dbs', 'models', 'dbs/models').items():
             setattr(self.model, v.__name__, v)

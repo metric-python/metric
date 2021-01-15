@@ -22,13 +22,11 @@ class Metric(ABC):
     def resource():
         # iterate the dictionary auto path resources as items key and value, then breakdown as resource,
         # except index and init.
-        for k, v in auto('app', 'resource', 'app/resource').items():
-            url = k.replace('app.resource', '')
-            url = url.split('.')[:-1]
+        for k, v in auto('apps', 'resources', 'apps/resource').items():
+            url = k.replace('apps.resources', '').split('.')[:-1]
             url = os.path.join(*url) if len(url) > 1 else ''
-            url = f'/{url}' if url[0] != '/' else ''
 
-            rsc(v, url)
+            rsc(v, f'/{url}')
 
     @abstractmethod
     def run(self):

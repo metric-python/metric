@@ -1,0 +1,16 @@
+ERROR METRIC!
+- GENERATE RESOURCE: OSError: Cannot write file!
+  [SOLUTIONS]: console/generate.py line 21 "path = ['apps', 'resources']"
+  
+- RUN SERVE: IndexError: string index out of range
+  [SOLUTIONS]: __init__.py line 26 "url = k.replace('apps.resources.', '').split('.')"
+                           line 27 "url = url[:-1] if len(url) > 1 else url[0]"
+
+- RUN SERVE: NO RESOURCE TARGETED [404]
+  [SOLUTIONS]: __init__.py line 26 "url = k.replace('apps.resources', '')"
+                           line 27 "url = url.split('.')[:-1]"
+                           line 29 "url = f'/{url}'"
+
+- ORM SELECT MULTIPLE COLUMNS
+  [SOLUTIONS]: db/query.py line 32 "self.q = self.s.query(*[getattr(self.__class__, i) for i in args])"
+  [CHANGE LOGS]: NOW METRIC CAN SELECT FEW COLUMNS BY SELECTION QUERY
