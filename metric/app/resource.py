@@ -1,10 +1,7 @@
 from abc import ABC
 
-# flask module required
-from flask import request, session
+from flask import request, jsonify
 from flask_wtf import FlaskForm
-
-# wtforms module required
 from wtforms import StringField, IntegerField
 from wtforms.validators import DataRequired, Email, ValidationError
 
@@ -12,16 +9,6 @@ from metric.app.view import View
 
 
 class Resource(ABC, View):
-    """
-    Base class resource, used as parent for resource
-
-    - headers, body, and file are the class attribute for resource requests
-
-    - requests are the class property for get the requests from resources that has been called
-
-    - validation are the function to validate the requests for resource
-    """
-
     headers, body, file = [{}, {}, {}]
 
     def __init__(self):
@@ -58,11 +45,11 @@ class Resource(ABC, View):
 
     def validation(self, csrf_enable=True, **kwargs):
         """
-        This function will validate your requests resource
+        ____Validate requests from resources____
 
-        @param csrf_enable:
-        @param kwargs:
-        @return:
+        @param csrf_enable: By default csrf is enable
+        @param kwargs: Dictionary arguments for validation
+        @return: Result form as dictionary
         """
         try:
             dict_validation = {}
@@ -91,3 +78,13 @@ class Resource(ABC, View):
                 return {'errors': forms.errors, 'code': 422}
             else:
                 return {'code': 200}
+
+    def jsonResponse(self, data, status_code=200):
+        """
+        ____Sending response as Json____
+
+        @param data: result query or resource
+        @param status_code: status code for result
+        @return: jsonify result
+        """
+        return jsonify(data), status_code

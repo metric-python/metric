@@ -6,6 +6,8 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from metric.db import session
 from metric.db.errors import AddQueryInvalid
+from metric.db.errors import DataValueInvalid
+
 
 class Query:
     """
@@ -14,13 +16,24 @@ class Query:
     __result = None
     __query = None
     __action = []
-    __along = []
     q = None
     s = session()
+
+    _a = None
 
     def __del__(self):
         self.s.close()
 
+    # ** USING JOIN **
+    def along(self, *args):
+        """
+        ____extend select with calling the relationship____
+        """
+        self._a = args
+        return self
+    # ** END OF JOIN **
+
+    # ** SHOW RECORD **
     def select(self, *args):
         """
         ____To starting some result you must first follow the select function and then anything else____
@@ -35,6 +48,81 @@ class Query:
 
         return self
 
+    def filter(self, col, value, operator='='):
+        """
+        ____Filter is only work when selecting database, it's equivalent where in SQL____
+
+        @param col: The column you want to filter
+        @param value: The value filtered
+        @param operator: Operator type for filter
+        @return: self
+        """
+        col = getattr(self.__class__, col)
+
+        if operator == 'like':
+            self.q = self.q.filter(col.like(value))
+        elif operator == '!=':
+            self.q = self.q.filter(col != value)
+        elif operator == 'in':
+            if isinstance(value, list) or isinstance(value, tuple):
+                self.q = self.q.filter(col.in_(value))
+            else:
+                raise DataValueInvalid(value)
+        else:
+            self.q = self.q.filter(col == value)
+
+        return self
+
+    def grab(self, edge, length):
+        """
+        ____Grab means to grab record by edge(offset) and length(limit)____
+
+        @param: edge: The offset of record
+        @param: length: Limitation of record
+        @return: self
+        """
+        self.q = self.q.offset(edge * length).limit(length).from_self()
+        return self
+
+    def sort(self, col, t):
+        """
+        ____sort the selecting query, equivalent to order_by____
+        """
+        if t == 'asc':
+            self.__query = self.__query.order_by(getattr(self.__class__, col))
+        else:
+            self.__query = self.__query.order_by(getattr(self.__class__, col))
+        return self
+
+    def all(self, result={}):
+        """
+        ____select everything that appear in result query____
+
+        @param result: Type of result to return
+        @return: Based on type result either dict or object, default dict
+        """
+        self.commit()
+
+        if isinstance(result, dict):
+            return [self.to_dict(i) for i in self.q.all()]
+
+        elif isinstance(result, object):
+            return [self.to_object(i) for i in self.q.all()]
+
+    def first(self, result={}):
+        """
+        ____select only the first one appear in result query____
+        """
+        self.commit()
+
+        if isinstance(result, dict):
+            return self.to_dict(self.q.first())
+
+        elif isinstance(result, object):
+            return self.to_object(self.q.first())
+    # ** END OF SHOW RECORD **
+
+    # ** ADD RECORD **
     def add(self, result={}, *args, **kwargs):
         """
         ____This function is supposed to insert data either single record or multiple____
@@ -72,6 +160,37 @@ class Query:
                 self.s.add_all(query)
                 self.commit()
 
+    def bulkInsert(self, *args):
+        """
+        ____Bulk insert is bulk insert but without return result____
+
+        @param args: List with dictionary inside
+        """
+        query = list()
+
+        for item in args:
+            query.append(self.__class__(**item))
+
+        self.s.bulk_save_objects(query)
+        self.commit()
+    # ** END OF ADD RECORD **
+
+    # ** DELETE RECORD **
+    def destruct(self, val):
+        """
+        ____Destruct is purposely to delete a record by it's ID____
+
+        @param val: id value of the record
+        """
+        try:
+            self.q = self.s.query(self.__class__)
+            self.q.filter(self.__class__.id == val).delete()
+        except SQLAlchemyError as err:
+            raise err
+        else:
+            self.commit()
+            return True
+
     def edit(self, **kwargs):
         self.first()
 
@@ -79,13 +198,6 @@ class Query:
             setattr(self.__result, k, v)
         self.commit(self.__result)
         return self.__result
-
-    def bulk_insert(self, *args):
-        query = list()
-        for item in args:
-            query.append(self.__class__(**item))
-        self.s.bulk_save_objects(query)
-        self.commit()
 
     def commit(self, query=None):
         try:
@@ -100,56 +212,6 @@ class Query:
                 self.s.refresh(query)
                 return query
 
-    def along(self, *args):
-        """
-        ____extend select with calling the relationship____
-        """
-        self.__along = args
-        return self
-
-    def filter(self, col, value):
-        get_table = getattr(self._sa_instance_state.class_, col)
-        self.__query = self.__query.filter(get_table == value)
-        return self
-
-    def where(self, **flt):
-        """
-        ____filter the selection query with____
-        """
-        self.__query = self.__query.filter_by(**flt)
-        return self
-
-    def grab(self, edge, length):
-        """
-        ____paginate the query by get the offset and limit based on the page and length____
-        """
-        self.__query = self.__query.offset(edge * length).limit(length).from_self()
-        return self
-
-    def sort(self, col, t):
-        """
-        ____sort the selecting query, equivalent to order_by____
-        """
-        if t == 'asc':
-            self.__query = self.__query.order_by(getattr(self.__class__, col))
-        else:
-            self.__query = self.__query.order_by(getattr(self.__class__, col))
-        return self
-
-    def all(self):
-        """
-        ____select everything that appear in result query____
-        """
-        self.commit()
-        return self.q.all()
-
-    def first(self):
-        """
-        ____select only the first one appear in result query____
-        """
-        self.__result = self.__query.first()
-        return self
-
     def to_dict(self, data):
         """
         ____Converting the result to dictionary data and return it with hidden and deleted instance____
@@ -160,7 +222,8 @@ class Query:
         data = data.__dict__
 
         # ____removing instance_state from data dictionary____
-        del data['_sa_instance_state']
+        if '_sa_instance_state' in data:
+            del data['_sa_instance_state']
 
         # ____removing key with hidden defined
         for i in self.__class__.hidden():
@@ -181,6 +244,13 @@ class Query:
             setattr(data_to_object, k, v)
 
         return data_to_object
+
+    def where(self, **flt):
+        """
+        ____filter the selection query with____
+        """
+        self.__query = self.__query.filter_by(**flt)
+        return self
 
     def result(self, show_as=None):
         """
