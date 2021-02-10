@@ -20,3 +20,13 @@ class DataValueInvalid(BaseError):
 
     def __str__(self):
         return f'{self.message}: {self.exception}'
+
+
+class NoneTypeValue(BaseError):
+    def __init__(self, exception, message="The value is empty or none"):
+        self.message = message
+        self.exception = exception
+        super().__init__(self.message)
+
+    def __str__(self):
+        return f'{self.message}: {self.exception}'

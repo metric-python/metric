@@ -1,3 +1,4 @@
+from math import ceil
 from alembic.util.exc import CommandError
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -40,7 +41,32 @@ class ORM:
         ____ORM class is the ORM class wizard to gather and summon all the models registered and
         send it to the attribute class____
         """
-        self.model = lambda : None
+        self.model = lambda: None
         for k, v in auto('dbs', 'models', 'dbs/models').items():
             setattr(self.model, v.__name__, v)
 
+    def pagination(self, model, page=0, limit=10, *args):
+        """
+
+        @param model:
+        @param page:
+        @param limit:
+        @param args:
+        """
+        result = lambda: None
+        record_count = model.count()
+        record_pagination = '<ul class="uk-pagination">'
+
+        for i in range(1, ceil(record_count / limit) + 1):
+            record_pagination += '<li class="uk-active">' if i - 1 == page else '<li>'
+            record_pagination += f'<a href="?page={i}">{i}</a></li>'
+
+        record_pagination += '</ul>'
+        record_data = model.select(*args) if args else model.select()
+
+        setattr(result, 'total', record_count)
+        setattr(result, 'page', record_pagination)
+        setattr(result, 'data', record_data)
+
+        result.data = result.data.grab(page, limit).all()
+        return result

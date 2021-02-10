@@ -1,10 +1,10 @@
 import bcrypt
 import datetime
-from flask_jwt_extended import (create_access_token,
-                                create_refresh_token,
-                                get_raw_jwt,
-                                verify_jwt_in_request,
-                                get_jwt_claims)
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_refresh_token
+from flask_jwt_extended import get_raw_jwt
+from flask_jwt_extended import verify_jwt_in_request
+from flask_jwt_extended import get_jwt_claims
 
 from metric.src import ROOTPATH
 from metric.src import iniConfig
@@ -70,3 +70,4 @@ class Auth:
             return get_jwt_claims()
         else:
             return False
+

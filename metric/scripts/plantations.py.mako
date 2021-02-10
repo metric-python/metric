@@ -1,5 +1,6 @@
-from metric.db.plantation import Plantation
+""" ____PLANTATION {$name}, CREATED AT: {$timestamp}_____ """
 
+from metric.db.plantation import Plantation
 
 
 class ${name}(Plantation):

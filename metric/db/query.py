@@ -7,6 +7,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from metric.db import session
 from metric.db.errors import AddQueryInvalid
 from metric.db.errors import DataValueInvalid
+from metric.db.errors import NoneTypeValue
 
 
 class Query:
@@ -47,6 +48,14 @@ class Query:
             self.q = self.s.query(self.__class__)
 
         return self
+
+    def count(self):
+        """
+        ____To show the total of record and it's returning the value directly____
+
+        @return:
+        """
+        return self.s.query(self.__class__).count()
 
     def filter(self, col, value, operator='='):
         """
@@ -120,6 +129,10 @@ class Query:
 
         elif isinstance(result, object):
             return self.to_object(self.q.first())
+
+        else:
+            return self.q.first()
+
     # ** END OF SHOW RECORD **
 
     # ** ADD RECORD **
@@ -150,13 +163,16 @@ class Query:
 
         # ____if args is not empty and is list then it multiple add instance____
         elif args:
+            print(args)
             try:
                 query = list()
                 for item in args:
+                    print(item)
                     query.append(self.__class__(**item))
             except AddQueryInvalid as err:
                 raise AddQueryInvalid(args)
             else:
+                print(query)
                 self.s.add_all(query)
                 self.commit()
 
@@ -219,17 +235,21 @@ class Query:
         @param data: The query data you given
         @return: dictionary data
         """
-        data = data.__dict__
+        try:
+            data = data.__dict__
 
-        # ____removing instance_state from data dictionary____
-        if '_sa_instance_state' in data:
-            del data['_sa_instance_state']
+            # ____removing instance_state from data dictionary____
+            if '_sa_instance_state' in data:
+                del data['_sa_instance_state']
 
-        # ____removing key with hidden defined
-        for i in self.__class__.hidden():
-            del data[i]
+            # ____removing key with hidden defined
+            for i in self.__class__.hidden():
+                del data[i]
 
-        return data
+            return data
+
+        except AttributeError as err:
+            raise NoneTypeValue(data)
 
     def to_object(self, data):
         """

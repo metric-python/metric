@@ -10,3 +10,5 @@ APP.config['JWT_SECRET_KEY'] = 'JWT-SECRET-KEY'
 APP.config['SECRET_KEY'] = 'SECRET_KEY'
 
 JWT = JWTManager(APP)
+
+APP_PATH = os.path.dirname(os.path.abspath(__file__))

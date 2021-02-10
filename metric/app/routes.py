@@ -1,5 +1,8 @@
 from inspect import isclass
 
+from flask import redirect as _rd
+from flask import url_for as _uf
+
 from metric.app import APP
 from metric.src.cabin import Cabin
 
@@ -14,6 +17,20 @@ def show_route():
         if rule.endpoint != 'static':
             func_list[rule.rule] = APP.view_functions[rule.endpoint].__name__
     return func_list
+
+
+def redirect(**kwargs):
+    """
+
+    @return: redirect response
+    """
+    if 'url' in kwargs:
+        target = kwargs['url']
+    elif 'endpoint' in kwargs:
+        target = _uf(kwargs['endpoint'])
+    else:
+        raise KeyError(kwargs)
+    return _rd(target, 302)
 
 
 # ** ROUTE **

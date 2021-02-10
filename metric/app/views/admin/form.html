@@ -1,0 +1,51 @@
+<!-- HEADER -->
+<h1>Users</h1>
+<!-- END OF HEADER -->
+
+<!-- FORM USER -->
+<form action="{{ url }}" method="{{ method }}">
+    <fieldset class="uk-fieldset">
+        <div class="uk-margin">
+			<label class="uk-text-meta">Name <sup class="uk-text-danger">*</sup></label>
+			{% if data is defined and data.name%}
+	            <input class="uk-input" type="text" placeholder="Name" required value="{{ data.name }}">
+			{% else %}
+	            <input class="uk-input" type="text" placeholder="Name" required>
+			{% endif %}
+        </div>
+
+        <div class="uk-margin">
+			<label class="uk-text-meta">Username <sup class="uk-text-danger">*</sup></label>
+			{% if data is defined and data.username %}
+				<input class="uk-input" type="text" placeholder="Username" required value="{{ data.username }}">
+			{% else %}
+	            <input class="uk-input" type="text" placeholder="Username" required>
+			{% endif %}
+        </div>
+
+        <div class="uk-margin">
+			<label class="uk-text-meta">Email <sup class="uk-text-danger">*</sup></label>
+			{% if data is defined and data.email %}
+				<input class="uk-input" type="email" placeholder="Email" required value="{{ data.email }}">
+			{% else %}
+	            <input class="uk-input" type="email" placeholder="Username" required>
+			{% endif %}
+        </div>
+
+        <div class="uk-margin">
+			<label class="uk-text-meta">Password <sup class="uk-text-danger">*</sup></label>
+            <input class="uk-input" type="password" placeholder="Password" required>
+        </div>
+
+        <div class="uk-margin">
+			<label class="uk-text-meta">Password confirmation <sup class="uk-text-danger">*</sup></label>
+            <input class="uk-input" type="password" placeholder="Password confirmation" required>
+        </div>
+
+        <div class="uk-margin">
+			<button type="submit"class="uk-button uk-button-primary">Save</button>
+			<button type="reset"class="uk-button uk-button-default">Reset</button>
+        </div>
+    </fieldset>
+</form>
+<!-- END OF FORM USER -->

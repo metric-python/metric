@@ -1,6 +1,9 @@
 from abc import ABC
-
-from flask import request, jsonify
+from functools import wraps
+from flask import jsonify
+from flask import request
+from flask import redirect
+from flask_jwt_extended import jwt_required
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField
 from wtforms.validators import DataRequired, Email, ValidationError
@@ -88,3 +91,18 @@ class Resource(ABC, View):
         @return: jsonify result
         """
         return jsonify(data), status_code
+
+    def redirecting(self, redirect_to):
+        """
+        ____Redirecting response to certain location____
+
+        @param redirect_to:
+        @return:
+        """
+        return redirect(redirect_to, 301)
+
+    def tokenRequired(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            pass
+        return jwt_required(wrapper)

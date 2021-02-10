@@ -1,4 +1,6 @@
 import os
+import datetime
+
 from mako.template import Template
 from alembic.command import revision, upgrade, downgrade
 
@@ -42,6 +44,7 @@ def __template(t, **kwargs):
 
         render_var = kwargs
         render_var['name'] = name
+        render_var['timestamp'] = datetime.datetime.now()
 
         path.append(f'{name.lower()}.py')
         template = Template(filename=os.path.join(ROOTPATH, 'scripts', f'{t}.py.mako'))
@@ -65,7 +68,7 @@ def model(name, table_name):
 
     :@param table_name: parameter to define your table name of the model
     """
-    __template('models', name=name, tablename=table_name)
+    __template('models', name=name, tablename=table_name.strip())
 
 
 def plantation(name):
@@ -122,8 +125,8 @@ def configReset(path=os.getcwd()):
     app_config = iniConfig(path).file_config
 
     # alembic configuration
-    app_config.set('alembic', 'version_locations', '%(here)s/db/version')
-    app_config.set('alembic', 'script_location', os.path.join(path, 'script'))
+    app_config.set('alembic', 'version_locations', '%(here)s/dbs/versions')
+    app_config.set('alembic', 'script_location', os.path.join(path, 'scripts'))
     app_config.set('alembic', 'output_encoding', 'utf-8')
 
     # application configuration

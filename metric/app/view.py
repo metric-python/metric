@@ -6,10 +6,11 @@ from metric.src import ROOTPATH
 
 
 class View:
-    _path_view = os.path.join(ROOTPATH, 'apps', 'views')
+    path_views = os.path.join(ROOTPATH, 'apps', 'views')
 
     def _loader(self, template_file):
-        return Environment(loader=FileSystemLoader(searchpath=self._path_view))
+        print(self.path_views)
+        return Environment(loader=FileSystemLoader(searchpath=self.path_views))
 
     def render(self, file, **kwargs):
         file = file.split('.')

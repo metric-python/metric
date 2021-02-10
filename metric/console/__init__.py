@@ -90,6 +90,10 @@ class Installer:
             copy(file, self.project)
         CABIN.info('copy setup files')
 
+        # ____move necessary file____
+        os.rename(os.path.join(self.project, 'env.py'), os.path.join(self.project, 'scripts', 'env.py'))
+        CABIN.info('move env to scripts')
+
 
 def initStart(project):
     installer = Installer()

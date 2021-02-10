@@ -1,3 +1,5 @@
+""" ____RESOURCES ${name}, CREATED AT: {$timestamp}_____ """
+
 from metric.app.resource import Resource
 
 

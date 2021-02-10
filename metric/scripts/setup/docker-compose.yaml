@@ -2,13 +2,13 @@ version: "3.7"
 
 services:
   mariadb:
-    container_name: metric_mariadb
+    container_name: MetricMariaDB
     image: mariadb:latest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: 'dbmetric_passwd'
-      MYSQL_DATABASE: 'dbmetric'
-      MYSQL_USER: 'dbmetric_user'
-      MYSQL_PASSWORD: 'dbmetric_passwd'
+      MYSQL_ROOT_PASSWORD: 'myPassword'
+      MYSQL_DATABASE: 'metric'
+      MYSQL_USER: 'metricUser'
+      MYSQL_PASSWORD: 'myPassword'
 volumes:
   mariadb-data:
