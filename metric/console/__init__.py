@@ -6,7 +6,7 @@ from alembic.command import init
 
 from metric.src.path import createDirectory, createPackage
 from metric.src.cabin import Cabin
-from metric.src import iniConfig
+from metric.src import ini_configuration
 from metric.console.generate import configReset, migration
 
 
@@ -26,7 +26,7 @@ class Installer:
             createDirectory(os.path.join(os.getcwd(), project_name))
         self.project = os.path.join(os.getcwd(), project_name)
 
-        init(iniConfig(self.project), self.project)
+        init(ini_configuration(self.project), self.project)
 
         self._buildDirectory()
         self._fileToManage()

@@ -1,58 +1,86 @@
+"""
+** #RESOURCE **
+---
+[ID]
+    Resource adalah gerbang pelabuhan yang mengatur jalannya pacakges dari requests dan mengirimkannya kembali dengan
+    response.
+[EN]
+    Resource is a port gate to that regulates the passage of packages by requests and send it back with response.
+
+:version 1.0.1
+"""
+
 from abc import ABC
 from functools import wraps
-from flask import jsonify
-from flask import request
-from flask import redirect
+
+from flask import jsonify as _json
+from flask import redirect as _rdr
+from flask import request as _req
 from flask_jwt_extended import jwt_required
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField
-from wtforms.validators import DataRequired, Email, ValidationError
+from wtforms.validators import DataRequired, Email
 
 from metric.app.view import View
 
 
-class Resource(ABC, View):
-    headers, body, file = [{}, {}, {}]
-
-    def __init__(self):
+class RequestValidationException(Exception):
+    def __init__(self, exception, message="Invalid requests parse!"):
         """
-        ____Base class for resources, read the documentation for more information about the resources____
+        ## RequestValidationException (Exception class)
+
+        [ID]
+            Exception class untuk mendefinisikan bahwa request tidak bisa di parsing karena suatu kesalahan.
+        [EN]
+            Exception class used to define the request cannot be parsed because error/invalid.
+
+        :param exception: the exception error message
+        :param message: message for the error description of this exception
         """
-        super(Resource, self).__init__()
+        self.message = message
+        self.exception = exception
+        super().__init__(self.message)
 
-        # ____building form class for resources validation____
-        self._class_name = self.__class__.__name__
+    def __str__(self):
+        return f'{self.message}: {self.exception}'
 
-    @property
-    def requests(self):
+
+class Requests:
+    parse = lambda: None
+
+    def __init__(self, class_name):
         """
-        ____An property class for extract the requests from resources____
+        ## Requests
 
-        @return: Requests results as dictionary
+        [ID]
+            Class ini berguna untuk melakukan parsing dan validasi terhadap requests yang masuk.
+        [EN]
+            This class is used to parsed and validation for incoming requests.
         """
-        _requests = lambda: None
+        self.class_name = class_name.lower()
 
-        if request.json is not None:
-            _requests.json = request.json
+        try:
+            if _req.json is not None:
+                self.parse.json = _req.json
 
-        if bool(request.form):
-            _requests.form = request.form.to_dict(flat=False)
+            if bool(_req.form):
+                self.parse.form = _req.form.to_dict(flat=False)
 
-            if bool(request.files):
-                _requests.file = request.files.to_dict(flat=False)
+                if bool(_req.files):
+                    self.parse.file = _req.files.to_dict(flat=False)
 
-        if bool(request.args):
-            _requests.args = request.args
-
-        return _requests
+            if bool(_req.args):
+                self.parse.args = _req.args
+        except AttributeError:
+            pass
 
     def validation(self, csrf_enable=True, **kwargs):
         """
-        ____Validate requests from resources____
+        ## validation
 
-        @param csrf_enable: By default csrf is enable
-        @param kwargs: Dictionary arguments for validation
-        @return: Result form as dictionary
+        :param csrf_enable:
+        :param kwargs:
+        :return:
         """
         try:
             dict_validation = {}
@@ -71,10 +99,12 @@ class Resource(ABC, View):
                     dict_validation[k] = IntegerField(k, validators=tmp_validators)
                 else:
                     dict_validation[k] = StringField(k, validators=tmp_validators)
+
         except KeyError as err:
-            raise ValidationError.with_traceback(err.__traceback__)
+            raise RequestValidationException.with_traceback(err.__traceback__)
+
         else:
-            forms = type(f'{self._class_name.lower()}_forms_validation', (FlaskForm,), dict_validation)
+            forms = type(f'{self.class_name}_forms_validation', (FlaskForm,), dict_validation)
             forms = forms(csrf_enabled=False) if not csrf_enable else forms()
 
             if not forms.validate():
@@ -82,27 +112,42 @@ class Resource(ABC, View):
             else:
                 return {'code': 200}
 
-    def jsonResponse(self, data, status_code=200):
-        """
-        ____Sending response as Json____
 
-        @param data: result query or resource
-        @param status_code: status code for result
-        @return: jsonify result
+class Response:
+    def __init__(self):
         """
-        return jsonify(data), status_code
+        ## Response
 
-    def redirecting(self, redirect_to):
+        [ID]
+            Class ini bertujuan untuk memberikan response kepada client, baik itu redirect, json atau HTML.
+        [EN]
+            This class is purposed to give response to the client which is redirect, json or HTML.
         """
-        ____Redirecting response to certain location____
+        pass
 
-        @param redirect_to:
-        @return:
+    def json(self, data, status_code=200):
+        return _json(data), status_code
+
+    def redirect(self, target):
+        return _rdr(target, 301)
+
+
+class Resource(ABC, View):
+    headers, body = [{}, {}]
+
+    def __init__(self):
         """
-        return redirect(redirect_to, 301)
+        ____Base class for resources, read the documentation for more information about the resources____
+        """
+        super(Resource, self).__init__()
+
+        # ____building form class for resources validation____
+        self.request  = Requests(self.__class__.__name__)
+        self.response = Response()
 
     def tokenRequired(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
             pass
+
         return jwt_required(wrapper)

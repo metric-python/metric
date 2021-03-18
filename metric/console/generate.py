@@ -8,7 +8,7 @@ from metric import ROOTPATH
 from metric.src.path import createFile
 from metric.src.path import createPackage
 from metric.src import saltKey
-from metric.src import iniConfig
+from metric.src import ini_configuration
 from metric.src.cabin import Cabin
 
 
@@ -85,7 +85,7 @@ def migration(message):
 
     :@param message: a parameter to describe your migration name and message.
     """
-    return revision(iniConfig(os.getcwd()), message=message)
+    return revision(ini_configuration(os.getcwd()), message=message)
 
 
 def up_version(target='head', sql_mode=False):
@@ -96,12 +96,12 @@ def up_version(target='head', sql_mode=False):
     :@param sql_mode: a toggle to show sql_mode, some kind like verbose on/off
     """
     CABIN.info('Upgrade migration!')
-    return upgrade(iniConfig(os.getcwd()), target, sql=sql_mode)
+    return upgrade(ini_configuration(os.getcwd()), target, sql=sql_mode)
 
 
 def down_version(target='head', sql_mode=False):
     CABIN.info('Downgrade migration!')
-    return downgrade(iniConfig(os.getcwd()), target, sql=sql_mode)
+    return downgrade(ini_configuration(os.getcwd()), target, sql=sql_mode)
 
 
 def up_plantation(name):
@@ -122,7 +122,7 @@ def configReset(path=os.getcwd()):
     reset the configuration system
     """
     app_key = saltKey()
-    app_config = iniConfig(path).file_config
+    app_config = ini_configuration(path).file_config
 
     # alembic configuration
     app_config.set('alembic', 'version_locations', '%(here)s/dbs/versions')

@@ -5,37 +5,13 @@
     "author": "kzulfazriawan",
     "email": "kzulfazriawan@gmail.com",
     "command": {
-        "init-app": {
-            "exec": "metric.console.initStart",
+        "init": {
+            "exec": "metric.cli.init",
             "help": "Init your application"
         },
-        "create-resource": {
-            "exec": "metric.console.generate.resource",
-            "help": "Generate a resource"
-        },
-        "create-model": {
-            "exec": "metric.console.generate.model",
-            "help": "Generate a model"
-        },
-        "create-migration": {
-            "exec": "metric.console.generate.migration",
-            "help": "Generate a migration"
-        },
-        "create-plantation": {
-            "exec": "metric.console.generate.plantation",
-            "help": "Generate a plantation"
-        },
-        "upgrade-migration": {
-            "exec": "metric.console.generate.up_version",
-            "help": "Upgrade version migration"
-        },
-        "downgrade-migration": {
-            "exec": "metric.console.generate.down_version",
-            "help": "Downgrade version migration"
-        },
-        "up-plantation":  {
-            "exec": "metric.console.generate.up_plantation",
-            "help": "Up and seed your plantation database"
+        "make-resource": {
+            "exec": "metric.cli.create_resource",
+            "help": "Create resource"
         }
     }
 }

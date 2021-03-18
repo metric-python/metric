@@ -16,7 +16,7 @@ class Users(Resource, ORM, View):
     """
     def __init__(self):
         super(Users, self).__init__()
-        self.path_views = os.path.join(APP_PATH, 'views', 'admin')
+        self.path_views = os.path.join(APP_PATH, 'views')
 
     def get(self):
         """
@@ -37,7 +37,7 @@ class Users(Resource, ORM, View):
             pass
 
         pagination = self.pagination(self.model.Users(), page, limit)
-        return self.render('users', pagination=pagination.page, data=pagination.data)
+        return self.render('users.users', pagination=pagination.page, data=pagination.data)
 
     def get_create_or_edit_form(self, _action):
         """
@@ -54,7 +54,7 @@ class Users(Resource, ORM, View):
                 data = self.model.Users()
                 data = data.select().filter('id', self.requests.args['id'])
 
-                return self.render('form', data=data.first(object()), method='put', url=url_for('users.post'))
+                return self.render('users.form', data=data.first(object()), method='put', url=url_for('users.post'))
 
             except NoneTypeValue:
                 # ____return 404 because the data return is error____
@@ -71,7 +71,7 @@ class Users(Resource, ORM, View):
             data = self.model.Users()
             data = data.select().filter('id', _id)
 
-            return self.render('detail', data=data.first(object()))
+            return self.render('users.detail', data=data.first(object()))
 
         except NoneTypeValue:
             # ____return 404 because the data return is error____

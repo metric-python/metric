@@ -1,28 +1,31 @@
 from math import ceil
+
 from alembic.util.exc import CommandError
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
-from metric.src import ini_configuration
-from metric.src.cabin import Cabin
+from metric.src import Base
 from metric.src.path import auto
 
-Model = declarative_base()
+MODEL = declarative_base()
 
 
 def session(connection=False):
-    '''
-    session(conection=bool(True/False))
-    ---
-    ____fungsi ini digunakan untuk system melakukan koneksi sesi ke database dengan menggunakan
-    sesi yang ada pada fungsi sqlalchemy, dan konfigurasi .ini menggunakan alembic konfigurasi.
-    parameter connection berfungsi sebagai penanda dari sesi koneksi dalam boolean, jika "True"
-    maka koneksi akan digunakan untuk membuat engine, jika tidak koneksi digunakan untuk mengikat
-    sesi pada database____
-    ---
-    '''
-    config = ini_configuration()
+    """
+    ## session
+
+    [ID]
+        Fungsi ini digunakan untuk menjalankan sesi koneksi ke mesin database dengan menggunakan sesi sqlalchemy dan
+        konfigurasi .ini
+    [EN]
+        This function is used to run session for connection through the engine database by using sqlalchemy sesion
+        and .ini configuration.
+
+    :param connection:
+    :return:
+    """
+    config = Base.base_configuration()
     try:
         url = config.get_main_option('sqlalchemy.url')
     except CommandError as e:
@@ -35,7 +38,7 @@ def session(connection=False):
             return create_engine(url).begin()
 
 
-class ORM:
+class Models:
     def __init__(self):
         """
         ____ORM class is the ORM class wizard to gather and summon all the models registered and

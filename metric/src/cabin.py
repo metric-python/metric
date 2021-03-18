@@ -1,12 +1,12 @@
 import logging
 from datetime import datetime
 
-from metric.src import iniConfig
+from metric.src import ini_configuration
 from metric.src import ROOTPATH
 
 
 class Cabin:
-    _config = iniConfig(ROOTPATH)
+    _config = ini_configuration(ROOTPATH)
     _now = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
 
     def __init__(self):

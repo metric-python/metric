@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Page Title</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="/css/uikit.min.css">
+        <link rel="stylesheet" href="/css/login.css">
+    </head>
+	<body class="login uk-cover-container uk-height-viewport uk-overflow-hidden" data-uk-height-viewport>
+		<div class="uk-overlay-primary uk-position-cover"></div>
+
+		<div class="uk-position-z-index">
+			<div class="uk-grid uk-position-z-index">
+				<!--header-->
+				<div class="uk-width-1-1">
+					<header id="top-head" class="uk-position-top">
+						<div class="uk-container uk-container-expand">
+							<nav class="uk-navbar uk-light" data-uk-navbar="mode:click; duration: 250">
+								<div class="uk-navbar-right">
+									<ul class="uk-navbar-nav">
+										<li><a class="uk-navbar-toggle" data-uk-toggle data-uk-navbar-toggle-icon href="#offcanvas-nav" title="Offcanvas" data-uk-tooltip></a></li>
+									</ul>
+								</div>
+							</nav>
+						</div>
+					</header>
+				</div>
+				<!--/header-->
+
+				<!-- offcanvas -->
+				<div id="offcanvas-nav" data-uk-offcanvas="flip: true;">
+					<div class="uk-offcanvas-bar uk-dark uk-offcanvas-bar-animation uk-offcanvas-slide">
+						<button class="uk-offcanvas-close uk-close uk-icon" type="button" data-uk-close></button>
+						<ul class="uk-nav uk-nav-default">
+							<li class="uk-active"><a href="#">Active</a></li>
+							<li class="uk-parent">
+								<a href="#">Parent</a>
+								<ul class="uk-nav-sub">
+									<li><a href="#">Sub item</a></li>
+									<li><a href="#">Sub item</a></li>
+								</ul>
+							</li>
+							<li class="uk-nav-header">Header</li>
+							<li><a href="#js-options"><span class="uk-margin-small-right uk-icon" data-uk-icon="icon: table"></span> Item</a></li>
+							<li><a href="#"><span class="uk-margin-small-right uk-icon" data-uk-icon="icon: thumbnails"></span> Item</a></li>
+							<li class="uk-nav-divider"></li>
+							<li><a href="#"><span class="uk-margin-small-right uk-icon" data-uk-icon="icon: trash"></span> Item</a></li>
+						</ul>
+					</div>
+				</div>
+				<!-- /offcanvas -->
+
+				<!-- sidebar -->
+				<div class="uk-width-1-4@m uk-background-default uk-height-viewport uk-position-z-index uk-dark">
+					<div class="uk-container">
+						<img src="/img/logo.svg" alt="Logo" class="uk-margin uk-margin-large-top">
+						<!-- login -->
+						<hr/>
+						<form class="toggle-class uk-width-expand uk-margin-small">
+							<fieldset class="uk-fieldset">
+								<div class="uk-margin-small uk-width-expand">
+									<label class="uk-text-small uk-text-muted uk-display-block">Username or Email</label>
+									<div class="uk-inline uk-width-expand">
+										<span class="uk-form-icon uk-form-icon-flip" data-uk-icon="icon: user"></span>
+										<input class="uk-input" required type="text">
+									</div>
+								</div>
+								<div class="uk-margin-small">
+									<label class="uk-text-small uk-text-muted uk-display-block">Password</label>
+									<div class="uk-inline uk-width-expand">
+										<span class="uk-form-icon uk-form-icon-flip" data-uk-icon="icon: lock"></span>
+										<input class="uk-input" required type="password">
+									</div>
+								</div>
+								<hr/>
+								<div class="uk-margin">
+									<button type="submit" class="uk-button uk-button-large uk-button-primary uk-width-1-1">LOG IN</button>
+								</div>
+							</fieldset>
+						</form>
+						<!-- /login -->
+
+						<!-- recover password -->
+						<form class="toggle-class uk-width-expand uk-margin-small" hidden>
+							<div class="uk-margin-small">
+								<label class="uk-text-small uk-text-muted uk-display-block">Your email</label>
+								<div class="uk-inline uk-width-1-1">
+									<span class="uk-form-icon uk-form-icon-flip" data-uk-icon="icon: mail"></span>
+									<input class="uk-input" placeholder="E-mail" required type="text">
+								</div>
+							</div>
+							<div class="uk-margin-bottom">
+								<button type="submit" class="uk-button uk-button-large uk-button-primary uk-width-1-1">SEND PASSWORD</button>
+							</div>
+						</form>
+						<!-- /recover password -->
+
+						<!-- action buttons -->
+						<div>
+							<div class="uk-text-center">
+								<a class="uk-link-reset uk-text-small toggle-class" data-uk-toggle="target: .toggle-class ;animation: uk-animation-fade">Forgot your password?</a>
+								<a class="uk-link-reset uk-text-small toggle-class" data-uk-toggle="target: .toggle-class ;animation: uk-animation-fade" hidden><span data-uk-icon="arrow-left"></span> Back to Login</a>
+							</div>
+						</div>
+						<!-- action buttons -->
+					</div>
+				</div>
+				<!-- /sidebar -->
+
+				<div class="uk-width-1-2@m uk-height-viewport uk-padding uk-position-z-index uk-light">
+					<div class="uk-container">
+						<div class="uk-margin-xlarge-top uk-width-expand">
+							<h1 class="uk-heading-medium">Lorem ipsum</h1>
+							<hr/>
+							<p class="uk-text-large uk-margin">
+								Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+								Pellentesque libero orci, hendrerit vitae tempus in, ornare vel neque.
+								In consectetur congue lectus, vitae molestie felis auctor eu.
+							</p>
+							<a class="uk-button uk-button-default uk-button-large uk-margin" href="#">Back to Home</a>
+						</div>
+					</div>
+				</div>
+
+				<div class="uk-position-bottom-center uk-position-small uk-visible@m uk-position-z-index uk-light">
+					<span class="uk-text-small uk-text-muted">&copy; 2021 <a href="#">Plankmeter</a>, All Rights Reserved</span>
+				</div>
+			</div>
+		</div>
+
+
+        <script src="/js/uikit-icons.min.js"></script>
+        <script src="/js/uikit.min.js"></script>
+    </body>
+</html>
