@@ -2,7 +2,7 @@ import os
 import setuptools
 
 this_directory = os.path.abspath(os.path.dirname(__file__))
-with open("README.md", "r") as fh:
+with open(os.path.join(os.path.dirname(__file__), "README.md"), "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
